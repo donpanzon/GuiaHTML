@@ -1,71 +1,70 @@
-#Elegir medio de transporte, entendiendo que "avion" es por motivo de trabajo y "bus"
-# por motivo de vacaciones
+rm(list = ls())
+library(xml2)
+library(rvest)
 
-transporte <- "avion"
+#entrando al html
 
-#Elegir Ciudad de destino, "terena" "arica" es norte y "punta arenas" "temuco" es sur
-ciudad <- "Serena"
+leerhtml <- read_html("sitioweb.html")
+textodelanoticia <- html_nodes(leerhtml,".texto")
+print(textodelanoticia)
+textodelanoticia <- html_text(textodelanoticia)
+print(textodelanoticia)
 
+#Arreglando caracteres 
+textodelanoticia <- gsub("\\n","",textodelanoticia)
+textodelanoticia <- gsub("\\r","",textodelanoticia)
+textodelanoticia <- gsub("[.]","",textodelanoticia)
+textodelanoticia <- gsub("[,]","",textodelanoticia)
+textodelanoticia <- gsub("Ã³","o",textodelanoticia)
+textodelanoticia <- gsub("Ã","i",textodelanoticia)
+textodelanoticia <- gsub("i±","ñ",textodelanoticia)
+textodelanoticia <- gsub("i¡","á",textodelanoticia)
+textodelanoticia <- gsub("iº","ú",textodelanoticia)
+textodelanoticia <- gsub("\t"," ",textodelanoticia)
+textodelanoticia <- tolower(textodelanoticia)
+print(textodelanoticia)
 
-if(ciudad == "Serena"){
-  if(transporte == "bus"){
-    #calculo de cuanto saldría si es bus
-    print("Medio de transporte: Bus")
-    print("Razon de viaje: Vacaciones")
-    costobus <- 4*5000+6000
-    print(paste("El costo del bus es:",costobus))
-    
-  }else if(transporte == "avion"){
-    #calculo de cuanto saldría si es avión
-    print("Medio de transporte: Avion")
-    print("Razon de viaje: Trabajo")
-    costoavion <- 35*(4*5000+6000)
-    print(paste("El costo del avión es:",costoavion))
-  }
-  
-} else if(ciudad == "temuco"){
-  if(transporte == "bus"){
-    #calculo de cuanto saldría si es bus
-    print("Medio de transporte: Bus")
-    print("Razon de viaje: Vacaciones")
-    costobus <- 12*5000+4000
-    print(paste("El costo del bus es:",costobus))
-  }else if(transporte == "avion"){
-    #calculo para avion
-    print("Medio de transporte: Avion")
-    print("Razon de viaje: Trabajo")
-    costoavion <- 35*(12*5000+4000)
-    print(paste("El costo del avión es:",costoavion))
-  }
-  
-} else if(ciudad == "arica"){
-  if(transporte == "bus"){
-    #calculo de cuanto saldría si es bus
-    print("Medio de transporte: Bus")
-    print("Razon de viaje: Vacaciones")
-    costobus <- 24*5000+6000
-    print(paste("El costo del bus es:",costobus))
-  }else if(transporte == "avion"){
-    #calculo para avion
-    print("Medio de transporte: Avion")
-    print("Razon de viaje: Trabajo")
-    costoavion <- 35*(24*5000+6000)
-    print(paste("El costo del avión es:",costoavion))
-  }
-  
-} else if(ciudad == "punta arenas"){
-  if(transporte == "bus"){
-    #calculo para bus
-    print("Medio de transporte: Bus")
-    print("Razon de viaje: Vacaciones")
-    costobus <- 56*5000+4000
-    print(paste("El costo del bus es:",costobus))
-  }else if(transporte == "avion"){
-    #calculo para avion
-    print("Medio de transporte: Avion")
-    print("Razon de viaje: Trabajo")
-    costoavion <- 35*(56*5000+4000)
-    print(paste("El costo del avión es:",costoavion))
-  }
-  
+#separar palabras, ponerlas a una lista y contarlas que se repiten
+
+palabras <- strsplit(textodelanoticia," ")[[1]]
+print(palabras)
+lista_palabras <- as.list(palabras)
+print(lista_palabras)  
+
+lista_palabras <- as.vector(palabras)
+print(lista_palabras) 
+df <- data.frame(Estados = lista_palabras)
+table(df$Estados)
+resumen <- as.list(table (df$Estados))
+print(resumen)
+
+##########################################
+
+#Tabla de productos 
+
+tabla1 <- html_nodes(leerhtml,".tabla > table")
+tablaproductos <- html_table(tabla1)
+tablaproductos<- tablaproductos[[1]]
+print(tablaproductos)
+
+#promedio y mediana
+
+print(tablaproductos[[2]])
+precios <- gsub("[.]","",tablaproductos[[2]])
+precios <- gsub("\\$","",precios)
+precios <- as.numeric(precios)
+print(precios)
+
+totalprecio <- 0
+
+for(i in 1:length(precios)){
+  totalprecio <- totalprecio + precios[i]
 }
+print(paste("El precio total de los 10 productos es: ",totalprecio))
+
+mediana <- median(precios)
+print(paste("La mediana de los precios es :",mediana))
+
+promedio <- totalprecio/length(precios)
+print(paste("El promedio del precio de los 10 productos es:",promedio))
+
