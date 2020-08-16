@@ -9,10 +9,11 @@ Tarea 3 de html con R, la cual consta de lo siguiente
 1.¿Se dieron cuenta de el suceso extraño respecto al tag “img”, analice en qué se
 diferencia de los tag ya vistos previamente? 
 -La diferencia entre este tag y los otros, es que este hace referencia a una imagen la cual estará delimitada por lo largo y ancho en terminos de tamaño en la página
+
 2. ¿qué clase, id o tag debo usar para que funcione html_tables?
 -Para que me funcione el html tables, primero tengo que acercarme al nodo que contiene la tabla guardandolo como nodo para posterior abrir este nodo y guardarlo como tabla, usando el . con el nombre de la clase que le habiamos estipulado anteriormente
 
-#HTML
+# HTML
 
 <html>
 <head>
